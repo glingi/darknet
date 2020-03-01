@@ -9,7 +9,7 @@ option(WITH_OPENCV "Include OpenCV Runtime support" OFF)
 option(WITH_OPENMP "Include OpenMP support" OFF)
 
 # specify the C++14 standard and disable non-standard extensions
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Ofast -Wfatal-errors -fPIC")
@@ -187,11 +187,6 @@ if(WITH_OPENCV)
         #target_include_directories(OpenCV INTERFACE ${OpenCV_INCLUDE_DIRS})
         #target_link_libraries(OpenCV INTERFACE ${OpenCV_LIBRARIES})
     endif()
-
-#    set_target_properties(OpenCV PROPERTIES
-#	INTERFACE_INCLUDE_DIRECTORIES ${OpenCV_INCLUDE_DIRS}
-#	INTERFACE_LINK_LIBRARIES ${OpenCV_LIBRARIES}
-#    )
 
     add_definitions(-DOPENCV)
 endif()
