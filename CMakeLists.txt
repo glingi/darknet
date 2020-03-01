@@ -12,7 +12,7 @@ option(WITH_OPENMP "Include OpenMP support" OFF)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Ofast -Wfatal-errors -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Ofast -Wfatal-errors -fPIC")
 
 # set output binary name
 set(bin_name Yolov3)
@@ -160,8 +160,8 @@ set(SOURCE_FILES
 add_library(CUDA INTERFACE)
 if(WITH_CUDA)
     find_package(CUDA)
-    #target_include_directories(CUDA INTERFACE ${CUDA_INCLUDE_DIRS})
-    #target_link_libraries(CUDA INTERFACE ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY} ${CUDA_CUBLAS_LIBRARIES} ${CUDA_npp_LIBRARY})
+    target_include_directories(CUDA INTERFACE ${CUDA_INCLUDE_DIRS})
+    target_link_libraries(CUDA INTERFACE ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY} ${CUDA_CUBLAS_LIBRARIES} ${CUDA_npp_LIBRARY})
     
     add_definitions(-DGPU)
     if(WITH_CUDNN)
@@ -184,27 +184,12 @@ if(WITH_OPENCV)
     find_package(OpenCV)
     if(WIN32)
     elseif(UNIX)
-        #target_include_directories(OpenCV INTERFACE ${OpenCV_INCLUDE_DIRS})
-        #target_link_libraries(OpenCV INTERFACE ${OpenCV_LIBRARIES})
+        target_include_directories(OpenCV INTERFACE ${OpenCV_INCLUDE_DIRS})
+        target_link_libraries(OpenCV INTERFACE ${OpenCV_LIBRARIES})
     endif()
 
     add_definitions(-DOPENCV)
 endif()
-
-# Specify include directories
-#include_directories(
-#    ${CUDA_INCLUDE_DIRS}
-#    ${OpenCV_INCLUDE_DIRS}
-#)
-
-# Specify library paths
-#link_directories(
-#    ${CUDA_LIBRARIES} 
-#    ${CUDA_curand_LIBRARY} 
-#    ${CUDA_CUBLAS_LIBRARIES} 
-#    ${CUDA_npp_LIBRARY}
-#    ${OpenCV_LIBRARIES}
-#)
 
 message(STATUS ${CUDA_LIBRARIES})
 message(STATUS ${CUDA_CUBLAS_LIBRARIES})
@@ -228,21 +213,20 @@ if(UNIX)
     # add the executable
     if(WITH_CUDA)
 	# c파일은 gcc로 컴파일, cu 파일은 nvcc로 컴파일
-        # CUDA_INCLUDE_DIRS가 자동으로 include_directories()에 추
-	#cuda_add_cublas_to_target(YoloV3)
+        # CUDA_INCLUDE_DIRS가 자동으로 include_directories()
         cuda_add_executable(${bin_name} ${SOURCE_FILES} ${HEADER_FILES} ${CUDA_FILES})
 	
     else()
 	add_executable(${bin_name} ${SOURCE_FILES} ${HEADER_FILES})
     endif()
-    #cuda_add_library(YoloV3 OpenCV)       #make so file
+    #cuda_add_library(YoloV3 OpenCV)
     # nvcc 영향 없음
     target_link_libraries(${bin_name} 
-	${OpenCV_LIBRARIES} 
-	${CUDA_LIBRARIES}
-	${CUDA_curand_LIBRARY} 
-	${CUDA_CUBLAS_LIBRARIES}
-	${CUDA_npp_LIBRARY}
+	#${OpenCV_LIBRARIES} 
+	#${CUDA_LIBRARIES}
+	#${CUDA_curand_LIBRARY} 
+	#${CUDA_CUBLAS_LIBRARIES}
+	#${CUDA_npp_LIBRARY}
 	#/etc/alternatives/libcudnn.so
 	pthread
 	m
@@ -251,12 +235,10 @@ if(UNIX)
     # Directory to the list of paths to search for include files
     # nvcc 영향 없음
     target_include_directories(${bin_name} PRIVATE
-	${OpenCV_INCLUDE_DIRS}
+	#${OpenCV_INCLUDE_DIRS}
 	${PROJECT_SOURCE_DIR}/include
- 	${CUDA_INCLUDE_DIRS}
+ 	#${CUDA_INCLUDE_DIRS}
 	#/etc/alternatives/cudnn.h
     )
 
-    #install(DESTINATION          .)
 endif(UNIX)
-
