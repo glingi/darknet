@@ -1,8 +1,8 @@
 ![Darknet Logo](http://pjreddie.com/media/files/darknet-black-small.png)
 
-# Mirror download site
+# Yolov3 data download site
 
-Thank you for sharing
+Thank you Ultralytics!
 
 https://drive.google.com/drive/folders/1LezFG5g3BCW6iYaV89B2i64cqEUZD7e0
 
