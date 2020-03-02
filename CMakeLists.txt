@@ -156,7 +156,6 @@ set(SOURCE_FILES
 )
 
 # Add target for CUDA, refer to OpenCV CMakeLists.txt
-
 add_library(CUDA INTERFACE)
 if(WITH_CUDA)
     find_package(CUDA)
@@ -164,7 +163,11 @@ if(WITH_CUDA)
     target_link_libraries(CUDA INTERFACE ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY} ${CUDA_CUBLAS_LIBRARIES} ${CUDA_npp_LIBRARY})
     
     add_definitions(-DGPU)
-    if(WITH_CUDNN)
+    add_library(CUDNN INTERFACE)
+    if(WITH_CUDNN)    
+	target_include_directories(CUDNN INTERFACE /usr/include)
+	target_link_libraries(CUDNN INTERFACE /usr/lib/x86_64-linux-gnu/libcudnn.so)
+ 	
 	add_definitions(-DCUDNN)
     endif()
 
@@ -222,12 +225,9 @@ if(UNIX)
     #cuda_add_library(YoloV3 OpenCV)
     # nvcc 영향 없음
     target_link_libraries(${bin_name} 
-	#${OpenCV_LIBRARIES} 
-	#${CUDA_LIBRARIES}
-	#${CUDA_curand_LIBRARY} 
-	#${CUDA_CUBLAS_LIBRARIES}
-	#${CUDA_npp_LIBRARY}
-	#/etc/alternatives/libcudnn.so
+	CUDA
+	CUDNN
+	OpenCV
 	pthread
 	m
     )
@@ -235,10 +235,10 @@ if(UNIX)
     # Directory to the list of paths to search for include files
     # nvcc 영향 없음
     target_include_directories(${bin_name} PRIVATE
-	#${OpenCV_INCLUDE_DIRS}
+	CUDA
+	CUDNN
+	OpenCV
 	${PROJECT_SOURCE_DIR}/include
- 	#${CUDA_INCLUDE_DIRS}
-	#/etc/alternatives/cudnn.h
     )
 
 endif(UNIX)
